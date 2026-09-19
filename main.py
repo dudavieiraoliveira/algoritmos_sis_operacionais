@@ -140,8 +140,88 @@ def SJF(preemptivo, execucao, espera, restante, chegada):
     tempo_chegada = list(chegada)
 
     # implementar codigo do SJF preemptivo e nao preemptivo
-    # ...
-    #
+
+    processos_finalizados = [False] * n_processos
+    tempo = 0
+    finalizados = 0
+
+    while finalizados < n_processos:
+
+        # Procura os processos que já chegaram e ainda não terminaram
+        disponiveis = []
+
+        for i in range(n_processos):
+            if tempo_chegada[i] <= tempo and tempo_restante[i] > 0:
+                disponiveis.append(i)
+
+        # Se nenhum processo chegou ainda, avança o tempo
+        if len(disponiveis) == 0:
+            tempo = tempo + 1
+            continue
+
+        # =========================================================
+        # SJF PREEMPTIVO
+        # =========================================================
+        if preemptivo:
+
+            # Escolhe o processo com menor tempo RESTANTE
+            processo_em_execucao = disponiveis[0]
+
+            for i in disponiveis:
+                if tempo_restante[i] < tempo_restante[processo_em_execucao]:
+                    processo_em_execucao = i
+
+            print("tempo[" + str(tempo) + "]: processo[" +
+                  str(processo_em_execucao) + "] restante=" +
+                  str(tempo_restante[processo_em_execucao]))
+
+            # Executa o processo durante 1 unidade de tempo
+            tempo_restante[processo_em_execucao] = \
+                tempo_restante[processo_em_execucao] - 1
+
+            tempo = tempo + 1
+
+            # Se terminou, registra
+            if tempo_restante[processo_em_execucao] == 0:
+                processos_finalizados[processo_em_execucao] = True
+                finalizados = finalizados + 1
+
+                # Tempo de espera =
+                # tempo que terminou - tempo de chegada - tempo de execução
+                tempo_espera[processo_em_execucao] = \
+                    tempo - tempo_chegada[processo_em_execucao] - \
+                    tempo_execucao[processo_em_execucao]
+
+        # =========================================================
+        # SJF NAO PREEMPTIVO
+        # =========================================================
+        else:
+
+            # Escolhe o processo com menor tempo de EXECUCAO
+            processo_em_execucao = disponiveis[0]
+
+            for i in disponiveis:
+                if tempo_execucao[i] < tempo_execucao[processo_em_execucao]:
+                    processo_em_execucao = i
+
+            print("tempo[" + str(tempo) + "]: processo[" +
+                  str(processo_em_execucao) + "] restante=" +
+                  str(tempo_restante[processo_em_execucao]))
+
+            # Guarda o tempo em que começou
+            inicio = tempo
+
+            # Executa o processo inteiro
+            tempo = tempo + tempo_restante[processo_em_execucao]
+
+            tempo_restante[processo_em_execucao] = 0
+
+            processos_finalizados[processo_em_execucao] = True
+            finalizados = finalizados + 1
+
+            # Tempo de espera = início - chegada
+            tempo_espera[processo_em_execucao] = \
+                inicio - tempo_chegada[processo_em_execucao]
 
     imprime_stats(tempo_espera)
 
