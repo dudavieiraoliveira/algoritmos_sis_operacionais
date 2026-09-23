@@ -156,12 +156,11 @@ def SJF(preemptivo, execucao, espera, restante, chegada):
 
         # Se nenhum processo chegou ainda, avança o tempo
         if len(disponiveis) == 0:
+            print("tempo[" + str(tempo) + "]: processo [ vazio ] - Nenhum processo executando")
             tempo = tempo + 1
             continue
 
-        # =========================================================
         # SJF PREEMPTIVO
-        # =========================================================
         if preemptivo:
 
             # Escolhe o processo com menor tempo RESTANTE
@@ -186,15 +185,12 @@ def SJF(preemptivo, execucao, espera, restante, chegada):
                 processos_finalizados[processo_em_execucao] = True
                 finalizados = finalizados + 1
 
-                # Tempo de espera =
-                # tempo que terminou - tempo de chegada - tempo de execução
+                # Tempo de espera = tempo que terminou - tempo de chegada - tempo de execução
                 tempo_espera[processo_em_execucao] = \
                     tempo - tempo_chegada[processo_em_execucao] - \
                     tempo_execucao[processo_em_execucao]
 
-        # =========================================================
         # SJF NAO PREEMPTIVO
-        # =========================================================
         else:
 
             # Escolhe o processo com menor tempo de EXECUCAO
@@ -204,24 +200,29 @@ def SJF(preemptivo, execucao, espera, restante, chegada):
                 if tempo_execucao[i] < tempo_execucao[processo_em_execucao]:
                     processo_em_execucao = i
 
-            print("tempo[" + str(tempo) + "]: processo[" +
-                  str(processo_em_execucao) + "] restante=" +
-                  str(tempo_restante[processo_em_execucao]))
-
-            # Guarda o tempo em que começou
+            # Guarda o tempo em que o processo começou
             inicio = tempo
 
-            # Executa o processo inteiro
-            tempo = tempo + tempo_restante[processo_em_execucao]
+            # Executa o processo inteiro mostrando cada instante de tempo
+            while tempo_restante[processo_em_execucao] > 0:
 
-            tempo_restante[processo_em_execucao] = 0
+                print("tempo[" + str(tempo) + "]: processo[" +
+                      str(processo_em_execucao) + "] restante=" +
+                      str(tempo_restante[processo_em_execucao]))
 
+                # Executa 1 unidade de tempo
+                tempo_restante[processo_em_execucao] = \
+                    tempo_restante[processo_em_execucao] - 1
+
+                tempo = tempo + 1
+
+            # Processo terminou
             processos_finalizados[processo_em_execucao] = True
             finalizados = finalizados + 1
 
-            # Tempo de espera = início - chegada
+            # Tempo de espera = tempo em que começou - chegada
             tempo_espera[processo_em_execucao] = \
-                inicio - tempo_chegada[processo_em_execucao]
+                inicio - tempo_chegada[processo_em_execucao]  
 
     imprime_stats(tempo_espera)
 
