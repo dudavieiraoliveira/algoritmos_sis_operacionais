@@ -168,7 +168,7 @@ Executará o algoritmo **Shortest Job First Preemptivo**.
 
 Nesta modalidade, o processo em execução pode ser interrompido caso outro processo disponível possua menor tempo de execução restante.
 
-**Status atual:** em desenvolvimento.
+**Status atual:** implementado.
 
 ---
 
