@@ -140,32 +140,34 @@ def SJF(preemptivo, execucao, espera, restante, chegada):
     tempo_chegada = list(chegada)
 
     # implementar codigo do SJF preemptivo e nao preemptivo
-
-    processos_finalizados = [False] * n_processos
+    # crio uma lista de processos que ainda não terminaram
+    processos_finalizados = [False] * n_processos 
     tempo = 0
     finalizados = 0
 
     while finalizados < n_processos:
 
-        # Procura os processos que já chegaram e ainda não terminaram
+        # lista de processos disponiveis para execução 
         disponiveis = []
 
+        # procura os processos que já chegaram e ainda não terminaram
         for i in range(n_processos):
             if tempo_chegada[i] <= tempo and tempo_restante[i] > 0:
                 disponiveis.append(i)
 
-        # Se nenhum processo chegou ainda, avança o tempo
+        # se nenhum processo chegou ainda, avança o tempo para fazer a verificação do proximo tempo
         if len(disponiveis) == 0:
             print("tempo[" + str(tempo) + "]: processo [ vazio ] - Nenhum processo executando")
             tempo = tempo + 1
             continue
 
-        # SJF PREEMPTIVO
-        if preemptivo:
+        # SJF PREEMPTIVO - implementação
+        if preemptivo == True:
 
-            # Escolhe o processo com menor tempo RESTANTE
+            # digo que o processo em execução recebe o primeiro processo na lista de disponiveis 
             processo_em_execucao = disponiveis[0]
 
+            # Escolhe o processo com menor tempo RESTANTE
             for i in disponiveis:
                 if tempo_restante[i] < tempo_restante[processo_em_execucao]:
                     processo_em_execucao = i
@@ -180,7 +182,7 @@ def SJF(preemptivo, execucao, espera, restante, chegada):
 
             tempo = tempo + 1
 
-            # Se terminou, registra
+            # Se terminou, registra na variavel e lista de finalizados 
             if tempo_restante[processo_em_execucao] == 0:
                 processos_finalizados[processo_em_execucao] = True
                 finalizados = finalizados + 1
@@ -193,9 +195,10 @@ def SJF(preemptivo, execucao, espera, restante, chegada):
         # SJF NAO PREEMPTIVO
         else:
 
-            # Escolhe o processo com menor tempo de EXECUCAO
+            # digo que o processo em execução recebe o primeiro processo na lista de disponiveis 
             processo_em_execucao = disponiveis[0]
 
+            # Escolhe o processo com menor tempo de EXECUCAO
             for i in disponiveis:
                 if tempo_execucao[i] < tempo_execucao[processo_em_execucao]:
                     processo_em_execucao = i
@@ -216,7 +219,7 @@ def SJF(preemptivo, execucao, espera, restante, chegada):
 
                 tempo = tempo + 1
 
-            # Processo terminou
+            # Processo terminou, registra na lista de proc. finalizados e na variavel 
             processos_finalizados[processo_em_execucao] = True
             finalizados = finalizados + 1
 
@@ -235,8 +238,93 @@ def PRIORIDADE(preemptivo, execucao, espera, restante, chegada, prioridade):
     prioridade_temp = list(prioridade)
 
     # implementar codigo do Prioridade preemptivo e nao preemptivo
-    # ...
-    #
+        # implementar codigo do SJF preemptivo e nao preemptivo
+    # crio uma lista de processos que ainda não terminaram
+    processos_finalizados = [False] * n_processos 
+    tempo = 0
+    finalizados = 0
+
+    while finalizados < n_processos:
+
+        # lista de processos disponiveis para execução 
+        disponiveis = []
+
+        # procura os processos que já chegaram e ainda não terminaram
+        for i in range(n_processos):
+            if tempo_chegada[i] <= tempo and tempo_restante[i] > 0:
+                disponiveis.append(i)
+
+        # se nenhum processo chegou ainda, avança o tempo para fazer a verificação do proximo tempo
+        if len(disponiveis) == 0:
+            print("tempo[" + str(tempo) + "]: processo [ vazio ] - Nenhum processo executando")
+            tempo = tempo + 1
+            continue
+
+        # SJF PREEMPTIVO - implementação
+        if preemptivo == True:
+
+            # digo que o processo em execução recebe o primeiro processo na lista de disponiveis 
+            processo_em_execucao = disponiveis[0]
+
+            # Escolhe o processo com menor numero de prioridade
+            for i in disponiveis:
+                if prioridade_temp[i] < prioridade_temp[processo_em_execucao]:
+                    processo_em_execucao = i
+
+            print("tempo[" + str(tempo) + "]: processo[" +
+                  str(processo_em_execucao) + "] restante=" +
+                  str(tempo_restante[processo_em_execucao]))
+
+            # Executa o processo durante 1 unidade de tempo
+            tempo_restante[processo_em_execucao] = \
+                tempo_restante[processo_em_execucao] - 1
+
+            tempo = tempo + 1
+
+            # Se terminou, registra na variavel e lista de finalizados 
+            if tempo_restante[processo_em_execucao] == 0:
+                processos_finalizados[processo_em_execucao] = True
+                finalizados = finalizados + 1
+
+                # Tempo de espera = tempo que terminou - tempo de chegada - tempo de execução
+                tempo_espera[processo_em_execucao] = \
+                    tempo - tempo_chegada[processo_em_execucao] - \
+                    tempo_execucao[processo_em_execucao]
+
+        # SJF NAO PREEMPTIVO
+        else:
+
+            # digo que o processo em execução recebe o primeiro processo na lista de disponiveis 
+            processo_em_execucao = disponiveis[0]
+
+            # Escolhe o processo com menor tempo de prioridade
+            for i in disponiveis:
+                if prioridade_temp[i] < prioridade_temp[processo_em_execucao]:
+                    processo_em_execucao = i
+
+            # Guarda o tempo em que o processo começou
+            inicio = tempo
+
+            # Executa o processo inteiro mostrando cada instante de tempo
+            while tempo_restante[processo_em_execucao] > 0:
+
+                print("tempo[" + str(tempo) + "]: processo[" +
+                      str(processo_em_execucao) + "] restante=" +
+                      str(tempo_restante[processo_em_execucao]))
+
+                # Executa 1 unidade de tempo
+                tempo_restante[processo_em_execucao] = \
+                    tempo_restante[processo_em_execucao] - 1
+
+                tempo = tempo + 1
+
+            # Processo terminou, registra na lista de proc. finalizados e na variavel 
+            processos_finalizados[processo_em_execucao] = True
+            finalizados = finalizados + 1
+
+            # Tempo de espera = tempo em que começou - chegada
+            tempo_espera[processo_em_execucao] = \
+                inicio - tempo_chegada[processo_em_execucao]  
 
     imprime_stats(tempo_espera)
 
